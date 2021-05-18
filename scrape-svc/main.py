@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import chromedriver_binary  # Adds chromedriver binary to path
 import json
-import logging
+#import logging
 from google.cloud import bigquery
 
 
@@ -55,10 +55,6 @@ def hello_world():
 def stroccurences():
     request_data = request.get_json()
     if request_data:
-        #if 'calling_task' in request_data:
-        #    calling_task = request_data['calling_task']
-        #else:
-        #    calling_task = "unspecified"
         if 'query' in request_data:
             query = request_data['query']
             req = base_url + query
@@ -96,36 +92,5 @@ def stroccurences():
         print("Error: no request data!")
         return "no request data\n", 401
 
-
-'''
-    browser.get(req)
-    try:
-        res = browser.find_element_by_class_name('results-info')
-        return res.get_attribute("data-mw-num-results-total")
-    except:
-        browser.find_element_by_class_name('mw-search-nonefound')
-        return 0
-'''
-'''
-            query = request_data['query']
-            req = base_url + query
-            browser.get(req)
-            res = browser.find_elements_by_class_name('results-info')
-            if len(res) > 0:
-                nbres = int(res[0].get_attribute("data-mw-num-results-total"))
-            else:
-                if browser.find_element_by_class_name('mw-search-nonefound'):
-                    nbres = 0
-                else:
-                    print("Weird Error Task: " + calling_task + " query: " + query + " no res found or not found!")
-                    nbres = 0
-            error = add_to_db(query, nbres)
-            if error == 0:
-                print()
-                return str(nbres), 200
-            else:
-                print("Error Task: " + calling_task + " query: " + query + "Res found but Not Inserted in BQ!")
-                return "Res found but Not Inserted in BQ\n", 404
-'''
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
