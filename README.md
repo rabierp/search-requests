@@ -2,7 +2,7 @@
 
 ## Build the scrape-svc container image
 From Cloud Shell: 
-````
+```
 $ gcloud config set project <project-name>  
 $ cd <repo_dir>/scrape-svc  
 $ gcloud builds submit --tag gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-svc  
