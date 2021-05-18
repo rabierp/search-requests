@@ -1,0 +1,13 @@
+# requirements.txt
+
+Flask==1.0.2
+gunicorn==19.9.0
+google-cloud-bigquery==1.26.1
+
+# You'll probably need to update this later
+# https://github.com/SeleniumHQ/selenium/releases
+selenium==3.141.0
+
+# You'll probably need to update this later
+# https://github.com/danielkaiser/python-chromedriver-binary/tags
+chromedriver-binary==v90.0.4430.24.0
