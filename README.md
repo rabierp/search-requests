@@ -41,5 +41,5 @@ $ python3 launch-tasks.py
 # Deploy the Cloud Run Services
 From Cloud Shell:
 ```
-$ for region in `cat regions-list.txt`; do echo $(gcloud run deploy scrape-svc-$region --region $region --image gcr.io/pascal-sandbox/my_scrapping_service --platform managed --no-allow-unauthenticated --format 'value(status.url)') >> urls-list.txt; done
+$ for region in `cat regions-list.txt`; do echo $(gcloud run deploy scrape-svc-$region --region $region --image gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-svc --platform managed --no-allow-unauthenticated --concurrency 4 --cpu 2 --memory 1Gi --max-instances 300 --format 'value(status.url)') >> urls-list.txt; done
 ```
