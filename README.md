@@ -43,3 +43,9 @@ From Cloud Shell:
 ```
 $ for region in `cat regions-list.txt`; do echo $(gcloud run deploy scrape-svc-$region --region $region --image gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-svc --platform managed --no-allow-unauthenticated --concurrency 4 --cpu 2 --memory 1Gi --max-instances 300 --format 'value(status.url)') >> urls-list.txt; done
 ```
+
+## Create the Cloud Tasks queues
+From Cloud Shell:
+```
+$ for region in `cat regions-list.txt`; do gcloud tasks queues create wsreqs-queue-$region --log-sampling-ratio=1.0 --max-attempts=100 --max-concurrent-dispatches=500 --max-dispatches-per-second=50 ; done
+```
