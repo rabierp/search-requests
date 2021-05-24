@@ -10,7 +10,7 @@ $ gcloud builds submit --tag gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-svc
 
 ## Start the Cloud Run service
 ```
-$ gcloud run deploy scrape-svc-euw1 --image scrape-svc --region europe-west1 --concurrency 4 --platform managed --allow-unauthenticated --cpu 2 --memory 1Gi --max-instances 300 
+$ gcloud run deploy scrape-svc-euw1 --image gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-svc --region europe-west1 --concurrency 4 --platform managed --allow-unauthenticated --cpu 2 --memory 1Gi --max-instances 300 
 ```
 
 ## Unit Test
