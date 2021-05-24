@@ -35,3 +35,11 @@ From a Notebook/instance (in the same directory as the 'requetes.txt' file):
 ```
 $ python3 launch-tasks.py
 ```
+
+# Use multiple concurrent Cloud Run services
+
+# Deploy the Cloud Run Services
+From Cloud Shell:
+```
+$ for region in `cat regions-list.txt`; do echo $(gcloud run deploy scrape-svc-$region --region $region --image gcr.io/pascal-sandbox/my_scrapping_service --platform managed --no-allow-unauthenticated --format 'value(status.url)') >> urls-list.txt; done
+```
