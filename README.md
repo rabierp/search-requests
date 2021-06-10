@@ -8,6 +8,8 @@ $ cd <repo_dir>/scrape-svc
 $ gcloud builds submit --tag gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-svc  
 ```
 
+# Test with only one Cloud Run service
+
 ## Start the Cloud Run service
 ```
 $ gcloud run deploy scrape-svc-euw1 --image gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-svc --region europe-west1 --concurrency 4 --platform managed --allow-unauthenticated --cpu 2 --memory 1Gi --max-instances 300 
@@ -49,3 +51,11 @@ From Cloud Shell:
 ```
 $ for region in `cat regions-list.txt`; do gcloud tasks queues create wsreqs-queue-$region --log-sampling-ratio=1.0 --max-attempts=100 --max-concurrent-dispatches=500 --max-dispatches-per-second=50 ; done
 ```
+
+## Split the input file
+From a Vertex AI Notebook (for more simplicity):
+
+Split the input file into 9 pieces
+
+## Launch 
+From your Vertex AI Notebook, launch 9 instances - 1 per target region - of the Launch_Tasks.ipynb Notebook, and change only the file
