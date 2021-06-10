@@ -51,11 +51,21 @@ From Cloud Shell:
 ```
 $ for region in `cat regions-list.txt`; do gcloud tasks queues create wsreqs-queue-$region --log-sampling-ratio=1.0 --max-attempts=100 --max-concurrent-dispatches=500 --max-dispatches-per-second=50 ; done
 ```
+## Create the BigQuery table
+From Cloud Shell:
+```
+$ bq --location=europe-west1 mk --dataset $GOOGLE_CLOUD_PROJECT:meae_dataset
+$ bq mk meae_dataset.meae_wsreqs_table
+```
 
 ## Split the input file
-From a Vertex AI Notebook (for more simplicity):
+From a Vertex AI Notebook (for more simplicity), open a terminal and upload the 'regions-list.txt' file, the 'urls-list.txt' file, and your input CSV file with all the queries.
+Then, split the input file into 9 pieces:
+```
+$ split -n l/9 allreqs-quoted.csv 
+```
+you now thave 9 files - xaa to xai - that contain approximately equals numbers of lines.
 
-Split the input file into 9 pieces
-
-## Launch 
-From your Vertex AI Notebook, launch 9 instances - 1 per target region - of the Launch_Tasks.ipynb Notebook, and change only the file
+## Launch the requests to the queues
+From your Vertex AI Notebook, launch 9 instances - 1 per target region - of the Launch_Tasks.ipynb Notebook, and change only the file name and the region index - 0 to 8 - in the last cell of the notebook.
+Execute all the notebook cells in sequence
