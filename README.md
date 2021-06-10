@@ -67,5 +67,5 @@ $ split -n l/9 allreqs-quoted.csv
 you now thave 9 files - xaa to xai - that contain approximately equals numbers of lines.
 
 ## Launch the requests to the queues
-From your Vertex AI Notebook, launch 9 instances - 1 per target region - of the Launch_Tasks.ipynb Notebook, and change only the file name and the region index - 0 to 8 - in the last cell of the notebook.
+From your Vertex AI Notebook, create and launch 9 copies - 1 per target region - of the 'Tasks-Launcher-4-0.ipynb' Notebook, and change only the file name and the region index - 0 to 8 - in the last cell of the notebook.
 Execute all the notebook cells in sequence
