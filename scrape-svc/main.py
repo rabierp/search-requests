@@ -7,8 +7,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import chromedriver_binary  # Adds chromedriver binary to path
 import json
-#import logging
+import logging as log
+import google.cloud.logging
 from google.cloud import bigquery
+import urllib.parse
 
 
 app = Flask(__name__)
@@ -31,9 +33,9 @@ BQ_TABLE = 'meae_wsreqs_table'
 BQ = bigquery.Client()
 table_id = BQ.dataset(BQ_DATASET).table(BQ_TABLE)
 
-def add_to_db(search, res):
+def add_to_db(lexique, categorie, res):
     row = [
-        {u"search": str(search), u"res": int(res)}
+        {u"lexique": str(lexique), u"categorie": str(categorie), u"res": int(res)}
     ]
 
     errors = BQ.insert_rows_json(
@@ -56,8 +58,13 @@ def stroccurences():
     request_data = request.get_json()
     if request_data:
         if 'query' in request_data:
-            query = request_data['query']
+            search_string = request_data['query']
+            lex = request_data['lexique']
+            cat = request_data['categorie']
+            log.info("received request for string: " + search_string + " = lex: " + lex + " + cat: " + cat)
+            query = urllib.parse.quote_plus(search_string)
             req = base_url + query
+            log.info("Scraping URL: " + req)
             browser.get(req)
             noresult = False
             try:
@@ -72,25 +79,26 @@ def stroccurences():
                     browser.find_element_by_class_name('mw-search-nonefound')
                 except NoSuchElementException:
                     noresult = True
-                    print("Weird Error: query: " + query + " - No res found or not found!")
+                    log.warning("Weird Error: query: " + query + " - No res found or not found!")
                     pass
                 else:
                     nbres = "0"
                     noresult = False
             if noresult == False:
-                error = add_to_db(query, nbres)
+                error = add_to_db(lex, cat, nbres)
                 if error == 0:
-                    print("Success: query: " + query + " - Res found and inserted in BQ!")
+                    log.info("Success: query: " + query + " - Res found and inserted in BQ!")
                     return nbres, 200
                 else:
-                    print("Error: query: " + query + "Res found but Not Inserted in BQ!")
+                    log.error("Error: query: " + query + "Res found but Not Inserted in BQ!")
                     return "Res found but Not Inserted in BQ\n", 404
         else:
-            print("Error: no query string in request data!") 
+            log.error("Error: no query string in request data!") 
             return "no query in request data\n", 402
     else:
-        print("Error: no request data!")
+        log.error("Error: no request data!")
         return "no request data\n", 401
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
