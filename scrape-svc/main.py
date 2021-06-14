@@ -33,6 +33,11 @@ BQ_TABLE = 'meae_wsreqs_table'
 BQ = bigquery.Client()
 table_id = BQ.dataset(BQ_DATASET).table(BQ_TABLE)
 
+# init logging
+logclient = google.cloud.logging.Client()
+logclient.get_default_handler()
+logclient.setup_logging()
+
 def add_to_db(lexique, categorie, res):
     row = [
         {u"lexique": str(lexique), u"categorie": str(categorie), u"res": int(res)}
