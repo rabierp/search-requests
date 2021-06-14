@@ -8,6 +8,13 @@ $ cd <repo_dir>/scrape-svc
 $ gcloud builds submit --tag gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-svc  
 ```
 
+## Create the BigQuery table
+From Cloud Shell:
+```
+$ bq --location=europe-west1 mk --dataset $GOOGLE_CLOUD_PROJECT:meae_dataset
+$ bq mk meae_dataset.meae_wsreqs_table
+```
+
 # Test with only one Cloud Run service
 
 ## Start the Cloud Run service
@@ -17,7 +24,7 @@ $ gcloud run deploy scrape-svc-euw1 --image gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-
 
 ## Unit Test
 ```
-$ curl -H "Content-type: application/json" -H "Authorization: Bearer $(gcloud auth print-identity-token)" -X POST https://scrape-svc-<service-URL>.a.run.app/stroccurences -d '{"query":"ôtés Produits de la culture et de l'\''elevage"}' 
+$ curl -H "Content-type: application/json" -H "Authorization: Bearer $(gcloud auth print-identity-token)" -X POST https://scrape-svc-<service-URL>.a.run.app/stroccurences -d '{"query":"ôtés Produits de la culture et de l'\''elevage", "lexique": "ôtés", "categorie": "Produits de la culture et de l'\''elevage"}' 
 ```
 
 ## Install the Cloud Tasks module
@@ -50,12 +57,6 @@ $ for region in `cat regions-list.txt`; do echo $(gcloud run deploy scrape-svc-$
 From Cloud Shell:
 ```
 $ for region in `cat regions-list.txt`; do gcloud tasks queues create wsreqs-queue-$region --log-sampling-ratio=1.0 --max-attempts=100 --max-concurrent-dispatches=500 --max-dispatches-per-second=50 ; done
-```
-## Create the BigQuery table
-From Cloud Shell:
-```
-$ bq --location=europe-west1 mk --dataset $GOOGLE_CLOUD_PROJECT:meae_dataset
-$ bq mk meae_dataset.meae_wsreqs_table
 ```
 
 ## Split the input file
