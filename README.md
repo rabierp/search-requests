@@ -15,6 +15,13 @@ $ bq --location=europe-west1 mk --dataset $GOOGLE_CLOUD_PROJECT:meae_dataset
 $ bq mk meae_dataset.meae_wsreqs_table
 ```
 
+## Within the UI
+Give the Compute Service Account the BigQuery data Editor role.
+create the following schema for the BigQuery Table :
+- lexique : String : Nullable
+- categorie : String : Nullable
+- res : Integer : Nullable
+
 # Test with only one Cloud Run service
 
 ## Start the Cloud Run service
