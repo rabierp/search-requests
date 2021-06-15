@@ -93,7 +93,7 @@ Execute all the notebook cells in sequence.
 From the BigQuery menu in the UI, run the following SQL script to sort the results
 ```
 SELECT *
-FROM `test-meae.meae_dataset.meae_wsreqs_table`
+FROM `<project-name>.meae_dataset.meae_wsreqs_table`
 ORDER BY lexique, categorie
 ```
 Then downlaod the result to a file using the export menu.
