@@ -15,9 +15,16 @@ $ bq --location=europe-west1 mk --dataset $GOOGLE_CLOUD_PROJECT:meae_dataset
 $ bq mk meae_dataset.meae_wsreqs_table
 ```
 
-## Within the UI
-Give the Compute Service Account the BigQuery data Editor role.
-create the following schema for the BigQuery Table :
+## Setup up the BigQuery table access rights
+From GCP UI, in the IAM menu, give the Compute Service Account the BigQuery data Editor role.
+This can also be done from Cloud Shell
+```
+$ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member=serviceAccount:<project-ID>-compute@developer.gserviceaccount.com --role=roles/bigquery.dataEditor
+```
+(the project id in the Servica account name can be found in the UI).
+
+## Define the BQ table schema
+In the UI, create the following schema for the BigQuery Table :
 - lexique : String : Nullable
 - categorie : String : Nullable
 - res : Integer : Nullable
@@ -67,6 +74,10 @@ $ for region in `cat regions-list.txt`; do gcloud tasks queues create wsreqs-que
 ```
 
 ## Split the input file
+The complete list of requests must be prepared in a CSV file with the following format :
+```
+mot-lexique;categorie
+```
 From a Vertex AI Notebook (for more simplicity), open a terminal and upload the 'regions-list.txt' file, the 'urls-list.txt' file, and your input CSV file with all the queries.
 Then, split the input file into 9 pieces:
 ```
@@ -77,3 +88,12 @@ you now thave 9 files - xaa to xai - that contain approximately equals numbers o
 ## Launch the requests to the queues
 From your Vertex AI Notebook, create and launch 9 copies - 1 per target region - of the 'Tasks-Launcher-4-0.ipynb' Notebook, and change only the file name and the region index - 0 to 8 - in the last cell of the notebook.
 Execute all the notebook cells in sequence.
+
+# Export the results to a csv file
+From the BigQuery menu in the UI, run the following SQL script to sort the results
+```
+SELECT *
+FROM `test-meae.meae_dataset.meae_wsreqs_table`
+ORDER BY lexique, categorie
+```
+Then downlaod the result to a file using the export menu.
