@@ -38,11 +38,11 @@ $ gcloud run deploy scrape-svc-euw1 --image gcr.io/$GOOGLE_CLOUD_PROJECT/scrape-
 
 ## Unit Test
 ```
-$ curl -H "Content-type: application/json" -H "Authorization: Bearer $(gcloud auth print-identity-token)" -X POST https://scrape-svc-<service-URL>.a.run.app/stroccurences -d '{"query":"ôtés Produits de la culture et de l'\''elevage", "lexique": "ôtés", "categorie": "Produits de la culture et de l'\''elevage"}' 
+$ curl -H "Content-type: application/json" -H "Authorization: Bearer $(gcloud auth print-identity-token)" -X POST https://scrape-svc-<service-URL>.a.run.app/gstroccurences -d '{"query":"ôtés Produits de la culture et de l'\''elevage", "lexique": "ôtés", "categorie": "Produits de la culture et de l'\''elevage"}' 
 ```
 
 ## Install the Cloud Tasks module
-Preferably from a Notebook/instance (vs Cloud Shell which will loose the change):
+Preferably from a Notebook/instance (vs Cloud Shell which will loose the changes):
 ```
 $ pip install google-cloud-tasks==2.2.0
 ```
@@ -74,11 +74,11 @@ $ for region in `cat regions-list.txt`; do gcloud tasks queues create wsreqs-que
 ```
 
 ## Split the input file
-The complete list of requests must be prepared in a CSV file with the following format :
+The complete list of requests must be prepared in a CSV file with the following format (don't forget double quotes if they are required):
 ```
 mot-lexique;categorie
 ```
-From a Vertex AI Notebook (for more simplicity), open a terminal and upload the 'regions-list.txt' file, the 'urls-list.txt' file, and your input CSV file with all the queries.
+From a Vertex AI Notebook (for more simplicity), open a terminal and upload the 'regions-list.txt' file, the 'urls-list.txt' file, as well as your input CSV file with all the queries.
 Then, split the input file into 9 pieces:
 ```
 $ split -n l/9 allreqs-quoted.csv 
@@ -87,7 +87,7 @@ you now thave 9 files - xaa to xai - that contain approximately equals numbers o
 
 ## Launch the requests to the queues
 From your Vertex AI Notebook, create and launch 9 copies - 1 per target region - of the 'Tasks-Launcher-4-0.ipynb' Notebook, and change only the file name and the region index - 0 to 8 - in the last cell of the notebook.
-Execute all the notebook cells in sequence.
+Execute all the notebook cells in sequence at an office hours time for each region.
 
 # Export the results to a csv file
 From the BigQuery menu in the UI, run the following SQL script to sort the results
